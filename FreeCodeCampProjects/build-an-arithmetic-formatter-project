@@ -1,0 +1,93 @@
+def arithmetic_arranger(problems, show_answers=False):
+
+    first_line = []
+    second_line = []
+    number_of_lines = []
+    third_line = []
+
+    first_section = 0
+
+    #error for too many problem
+    if len(problems) > 5:
+        return 'Error: Too many problems.'
+
+    for problem in problems:
+
+        problem_seperater = problem.split(' ')
+
+        #if it contain somthing other than a digit
+        try:
+            int(problem_seperater[0])
+            int(problem_seperater[2])
+        except ValueError:
+            return 'Error: Numbers must only contain digits.'
+        
+        if len(problem_seperater[0]) > 4 or len(problem_seperater[2]) > 4 :
+            return 'Error: Numbers cannot be more than four digits.'
+
+        #error for muliplication and divison
+        if problem_seperater[1] == '/' or problem_seperater[1] == '*':
+            return "Error: Operator must be '+' or '-'."
+        
+
+        #first line
+
+        first_space_needed = 2 + len(max(problem_seperater,key=len)) - len(problem_seperater[0])
+
+        if first_section == 0:
+            first_line_section = ' ' * first_space_needed + problem_seperater[0]
+        else:
+            first_line_section = '   ' + ' ' * first_space_needed + problem_seperater[0]
+
+        first_line.append(first_line_section)
+
+        #second line
+        if first_section == 0:
+            second_line_section = problem_seperater[1] + ' ' * (1 + len(max(problem_seperater, key=len)) - len(problem_seperater[2])) + problem_seperater[2]
+        else:
+            second_line_section = '   ' + problem_seperater[1] + ' ' * (1 + len(max(problem_seperater, key=len)) - len(problem_seperater[2])) + problem_seperater[2]
+
+        second_line.append(second_line_section)
+
+        #lines needed
+        if first_section == 0:
+            number_of_lines_section ='-' * (2 + len(max(problem_seperater, key=len)))
+        else:
+            number_of_lines_section ='   ' + '-' * (2 + len(max(problem_seperater, key=len)))
+
+        number_of_lines.append(number_of_lines_section)
+        
+        #solver
+        first_value = int(problem_seperater[0])
+        second_value = int(problem_seperater[2])
+        final_value = 0
+        if problem_seperater[1] == '+':
+           final_value = first_value + second_value
+        elif problem_seperater[1] == '-':
+            final_value = first_value - second_value
+        
+        if first_section == 0:
+            final_value_section = ' ' * int((2 + len(max(problem_seperater, key=len))) - len(str(final_value))) + str(final_value)
+            first_section = first_section + 1
+        else:
+            final_value_section = '   ' + ' ' * int((2 + len(max(problem_seperater, key=len))) - len(str(final_value))) + str(final_value)
+
+        third_line.append(final_value_section)
+        
+
+        
+    #final calulation
+    final_1 = ' '.join(first_line)
+    final_2 = ' '.join(second_line)
+    final_lines_needed = ' '.join(number_of_lines)
+    final_3 = ' '.join(third_line)
+
+    if show_answers == False:
+        final = str(f'{final_1}\n{final_2}\n{final_lines_needed}')
+    elif show_answers == True:
+        final = str(f'{final_1}\n{final_2}\n{final_lines_needed}\n{final_3}')
+    
+
+    return final
+
+print(f'\n{arithmetic_arranger(["44 + 815", "909 - 2", "45 + 43", "123 + 49", "888 + 40", "653 + 87"])}')
