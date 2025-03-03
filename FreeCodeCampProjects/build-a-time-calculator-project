@@ -1,0 +1,111 @@
+def add_time(start, duration, starting_Day = ''):
+    # find if its AM
+    if start[-2:] == 'AM':
+        if_AM = True
+    else:
+        if_AM = False
+    
+    # find the starting time
+    starting_hour = int(start[:-6])
+    starting_minute = int(start[-5:-3])
+
+    # find time needed to be added
+    hours_to_add = int(duration[:-3])
+    minutes_to_add = int(duration[-2:])
+
+    #   calculate time
+    total_minutes = starting_minute + minutes_to_add
+    total_hours = starting_hour + hours_to_add
+    days_gone = 0
+
+    if total_minutes >= 60:
+        total_minutes = total_minutes - 60
+        total_hours += 1
+    while total_hours > 12:
+        if if_AM:
+            if_AM = False
+            total_hours = total_hours - 12
+        elif if_AM == False:
+            if_AM = True
+            total_hours = total_hours - 12
+            days_gone += 1
+
+    if total_hours == 12:
+        if if_AM:
+            if_AM = False
+        elif if_AM == False:
+            if_AM = True
+            days_gone += 1
+
+    # calculate if am of pm
+    display_time = 'AM'
+    if if_AM:
+        display_time = 'AM'
+    elif if_AM == False:
+        display_time = 'PM'
+    else:
+        print('ff')
+
+    Day = ''
+    
+    if starting_Day != '':
+        Day = calculate_day(starting_Day, days_gone)
+
+    # Make everthing readable
+    if total_minutes < 10:
+        total_minutes = str('0' + str(total_minutes))
+        total_hours = str(total_hours)
+    else:
+        total_minutes = str(total_minutes)
+        total_hours = str(total_hours)
+
+    if days_gone > 1:
+        days_gone = str(f'({days_gone} days later)')
+    elif days_gone == 1:
+        days_gone = str('(next day)')
+    elif days_gone == 0:
+        days_gone = 0
+
+
+    final_string = make_readable(total_hours, total_minutes, display_time, days_gone, Day)
+
+    return final_string
+
+def calculate_day(starting_Day, days_gone):
+
+    table_of_days = {
+        'Monday': 1,
+        'Tuesday': 2,
+        'Wednesday': 3,
+        'Thursday': 4,
+        'Friday': 5,
+        'Saturday': 6,
+        'Sunday': 7
+    }
+
+    starting_Day = starting_Day.lower()
+    starting_Day = starting_Day.capitalize()
+    starting_Day_value = int(table_of_days[starting_Day])
+    Day = starting_Day_value + days_gone
+
+    while Day > 7:
+        Day = Day - 7
+
+    for key, val in table_of_days.items():
+        if val == Day:
+            Day = key
+            break
+
+    return Day
+    
+def make_readable(total_hours, total_minutes, display_time, days_gone = 0, Day = ''):
+    if days_gone == 0 and Day == '':
+        return str(f'{total_hours}:{total_minutes} {display_time}')
+    elif Day == '' and days_gone != 0:
+        return str(f'{total_hours}:{total_minutes} {display_time} {days_gone}')
+    elif Day != '' and days_gone == 0:
+        return str(f'{total_hours}:{total_minutes} {display_time}, {Day}')
+    else:
+        return str(f'{total_hours}:{total_minutes} {display_time}, {Day} {days_gone}')
+
+add_time('3:30 PM', '2:12')
