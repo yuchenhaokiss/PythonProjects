@@ -1,0 +1,111 @@
+import math
+
+class Category:
+    def __init__(self, category):
+        self.total_amount = 0
+        self.ledger = []
+        self.category = category
+        self.total_withdraw = 0
+    
+    def __str__(self):
+        dots_needed = 30 - len(self.category)
+        dots_each_side = dots_needed/2
+        dot_string = '*' * int(dots_each_side)
+        items = []
+        for i in self.ledger:
+            items.extend(f"\n{i.get('description')[:23]+' '*(23-len(i.get('description')[:23]))}{i.get('amount'): > 7.2f}")
+            
+        all_items = ''.join(items)
+        return f'{dot_string}{self.category}{dot_string}{all_items}\nTotal:{self.total_amount: 0.2f}'
+    
+    def __repr__(self):
+        dots_needed = 30 - len(self.category)
+        dots_each_side = dots_needed/2
+        dot_string = '*' * int(dots_each_side)
+        items = []
+        for i in self.ledger:
+            items.extend(f"\n{i.get('description')[:23]+' '*(23-len(i.get('description')[:23]))}{i.get('amount'): > 7.2f}")
+            
+        all_items = ''.join(items)
+        return f'{dot_string}{self.category}{dot_string}{all_items}\nTotal:{self.total_amount: 0.2f}'
+
+    def deposit(self, amount, description = ''):
+        self.ledger.append({'amount': amount, 'description': description})
+        self.total_amount = self.total_amount + amount
+    
+    def withdraw(self, amount, description = ''):
+        if self.check_funds(amount):
+            
+            self.ledger.append({'amount': -1 * amount, 'description': description})
+            self.total_amount = self.total_amount - amount
+            self.total_withdraw += amount
+            return True
+        else:
+            return False
+    
+    def get_balance(self):
+        return self.total_amount
+    
+    def transfer(self, amount, category):
+        if self.check_funds(amount):
+            self.withdraw(amount, f'Transfer to {category.category}')
+            category.deposit(amount, f'Transfer from {self.category}')
+            return True
+        else:
+            return False
+            
+    
+    def check_funds(self, amount):
+        if amount > self.total_amount:
+            return False
+        else:
+            return True
+        
+
+
+def create_spend_chart(categories):
+    sum_of_all_withdraw = sum(i.total_withdraw for i in categories)
+    dots_for_each = {i.category: math.floor(i.total_withdraw / sum_of_all_withdraw * 100 / 10) * 10 for i in categories}
+
+    side_bar = []
+    for i in range(100, -1, -10):
+        side_bar.append(f'{i:>3}|')
+
+        for j in categories:
+            if dots_for_each[j.category] >= i:
+                side_bar.append(' o ')
+            else:
+                side_bar.append('   ')
+
+        side_bar.append(' ') 
+        side_bar.append('\n')
+
+
+    line = '    ' + '-' * (3 * len(categories) + 1)
+
+    category_names = [i.category for i in categories]
+    max_length = max(len(name) for name in category_names)
+    category_lines = ['     '] * max_length
+
+    for i in range(max_length):
+        for name in category_names:
+            if i < len(name):
+                category_lines[i] += name[i] + '  '
+            else:
+                category_lines[i] += '   ' 
+    category_text = "\n".join(category_lines)
+
+    return f'Percentage spent by category\n{"".join(side_bar)}{line}\n{category_text}'
+
+food = Category('Food')
+clothing = Category('Clothing')
+
+food.deposit(900, 'catasdjllllkjhkjhkjhkjnndm')
+clothing.deposit(900, 'catasdjllllkjhkjhkjhkjnndm')
+
+food.withdraw(100, 'cat')
+clothing.withdraw(10, 'cat')
+food.transfer(10, clothing)
+
+
+print(create_spend_chart([food, clothing]))
