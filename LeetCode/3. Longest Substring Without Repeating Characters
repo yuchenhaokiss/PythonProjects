@@ -1,0 +1,24 @@
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        largest = 0
+        characters = {}
+        for i in range(0, len(s)):
+            if s[i] not in characters.keys():
+                characters.update({s[i]: i})
+                if len(characters) > largest:
+                    largest = len(characters)
+                else: 
+                    pass
+            elif len(characters) == 95:
+                return 95
+            else:
+                og_pos = characters.get(s[i])
+                print(characters)
+                characters = {x: y for x, y in characters.items() if y >= og_pos}
+                characters.update({s[i]: i})
+                if len(characters) > largest:
+                    largest = len(characters)
+                else: 
+                    pass
+
+        return largest
