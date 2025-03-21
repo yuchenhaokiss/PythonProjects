@@ -1,0 +1,9 @@
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        og_length = len(nums)
+        number_of_val = nums.count(val)
+
+        for i in range(number_of_val):
+            nums.remove(val)
+
+        return og_length - number_of_val
