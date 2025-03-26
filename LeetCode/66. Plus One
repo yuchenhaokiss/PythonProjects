@@ -1,0 +1,21 @@
+class Solution:
+    def plusOne(self, digits: List[int]) -> List[int]:
+        if digits[-1] != 9:
+            digits[-1] += 1
+            return digits
+
+        number = 0
+        count = 10 ** (len(digits) - 1)
+
+        for i in digits:
+            number += i * count
+            count = count // 10
+
+        number += 1
+
+        hi = []
+        number = str(number)
+        for i in range(len(number)):
+            hi.append(int(number[i]))
+
+        return hi
