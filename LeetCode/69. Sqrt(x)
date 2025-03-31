@@ -1,0 +1,11 @@
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        min_ = 0
+        max_ = x
+        mid = max_ / 2
+    
+        while min_ != max_:
+            if mid*mid > x:
+                max_ = mid
+                mid = mid / 2
+            else
